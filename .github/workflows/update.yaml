@@ -17,31 +17,28 @@ jobs:
           - version: current
       max-parallel: 1
     steps:
-      - name: Install Python 3.12
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-        id: install-cp310
+      - name: Install uv
+        uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
       - name: Check-out the data branch
-        uses: actions/checkout@v4
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
         with:
           ref: data
+          persist-credentials: false
       - name: Check-out the main repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
         with:
           repository: layday/instawow
           ref: ${{ matrix.catalogue.ref }}
           path: instawow
+          persist-credentials: false
       - name: Install instawow
-        run: pipx install ./instawow
-        env:
-          PIPX_DEFAULT_PYTHON: ${{ steps.install-cp310.outputs.python-path }}
+        run: uv tool install -p 3.13 ./instawow
       - name: Generate ${{ matrix.catalogue.version }} catalogue
-        run: instawow generate-catalogue --start-date 2020-11-23
+        run: instawow generate-catalogue --start-date 2025-07-21
         env:
           INSTAWOW_ACCESS_TOKENS: ${{ secrets.INSTAWOW_ACCESS_TOKENS }}
       - name: Commit changes
-        uses: stefanzweifel/git-auto-commit-action@v4
+        uses: stefanzweifel/git-auto-commit-action@04702edda442b2e678b25b537cec683a1493fcb9 # v7.1.0
         with:
           commit_message: Update ${{ matrix.catalogue.version }} catalogue
           branch: data
