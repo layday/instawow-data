@@ -29,6 +29,7 @@ jobs:
         with:
           repository: layday/instawow
           ref: ${{ matrix.catalogue.ref }}
+          fetch-depth: 0
           path: instawow
           persist-credentials: false
       - name: Install instawow
